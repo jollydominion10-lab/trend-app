@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TrendApp — Sentiment & Analytics Dashboard</title>
+  <title>TrendApp — Brand Sentiment Analytics</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
@@ -26,13 +26,118 @@
       background-color: var(--bg);
       color: var(--text);
       margin: 0;
-      padding: 24px;
+      padding: 0;
       min-height: 100vh;
       background-image: radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
                         radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.08) 0%, transparent 40%);
     }
 
-    .container { max-width: 1100px; margin: 0 auto; }
+    /* WELCOME / ONBOARDING SCREEN */
+    #welcome-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+      max-width: 650px;
+      margin: 0 auto;
+      min-height: 85vh;
+    }
+
+    .badge {
+      background: rgba(79, 70, 229, 0.1);
+      color: #4f46e5;
+      border: 1px solid rgba(79, 70, 229, 0.25);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 20px;
+    }
+
+    .hero-title {
+      font-size: 40px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 14px;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    .welcome-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      width: 100%;
+      box-sizing: border-box;
+      text-align: left;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #ffffff;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 14px;
+      box-sizing: border-box;
+      outline: none;
+    }
+
+    input:focus, select:focus { border-color: var(--accent); }
+
+    .btn-launch {
+      background: var(--accent-gradient);
+      color: #fff;
+      font-weight: 800;
+      font-size: 16px;
+      padding: 14px 28px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      transition: transform 0.2s, opacity 0.2s;
+      box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+      margin-top: 10px;
+    }
+
+    .btn-launch:hover { opacity: 0.95; transform: translateY(-2px); }
+
+    /* MAIN DASHBOARD SCREEN */
+    #dashboard-screen {
+      display: none;
+      padding: 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
 
     .header {
       display: flex;
@@ -46,6 +151,17 @@
     }
 
     h1 { font-size: 24px; font-weight: 800; margin: 0; color: var(--text); }
+
+    .btn-secondary {
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      font-weight: 700;
+      padding: 10px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 13px;
+    }
 
     .metrics-grid {
       display: grid;
@@ -89,19 +205,6 @@
 
     .controls-bar { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
 
-    input, select {
-      padding: 10px 14px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: var(--card-bg);
-      color: var(--text);
-      font-family: inherit;
-      font-size: 14px;
-      outline: none;
-    }
-
-    input:focus, select:focus { border-color: var(--accent); }
-
     .btn-primary {
       background: var(--accent-gradient);
       color: #fff;
@@ -111,10 +214,7 @@
       border-radius: 10px;
       cursor: pointer;
       font-size: 14px;
-      transition: opacity 0.2s;
     }
-
-    .btn-primary:hover { opacity: 0.9; }
 
     .stream-card {
       background: var(--card-bg);
@@ -153,13 +253,38 @@
 </head>
 <body>
 
-  <div class="container">
+  <div id="welcome-screen">
+    <div class="badge">📈 Social Sentiment Intelligence</div>
+    <h1 class="hero-title">Track Real-Time Brand Sentiment</h1>
+    <p class="hero-subtitle">
+      Monitor live consumer mentions, sentiment polarity, and social volume trends for your business in seconds.
+    </p>
+
+    <div class="welcome-card">
+      <form id="brand-form">
+        <div class="form-group">
+          <label>Brand / Product Name</label>
+          <input type="text" id="brand-name-input" placeholder="e.g., Tesla, Nike, Acme Inc." required>
+        </div>
+        <div class="form-group">
+          <label>Official Website Domain</label>
+          <input type="text" id="brand-url-input" placeholder="e.g., https://mybrand.com" required>
+        </div>
+        <button type="submit" class="btn-launch">Analyze Brand Sentiment →</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="dashboard-screen">
     <div class="header">
       <div>
-        <h1>📈 TrendApp — Sentiment Analytics Engine</h1>
-        <p style="color: var(--muted); margin: 4px 0 0 0; font-size: 13px;">Real-time Social Mention Tracking & Sentiment Polarity Breakdown</p>
+        <h1 id="brand-title">📈 TrendApp Analytics</h1>
+        <p style="color: var(--muted); margin: 4px 0 0 0; font-size: 13px;" id="brand-subtitle">Real-time Social Mention Tracking & Sentiment Polarity</p>
       </div>
-      <button class="btn-primary" id="sim-mention-btn">+ Simulate Incoming Mention</button>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-secondary" id="change-brand-btn">← Switch Brand</button>
+        <button class="btn-primary" id="sim-mention-btn">+ Simulate Mention</button>
+      </div>
     </div>
 
     <div class="metrics-grid">
@@ -210,13 +335,20 @@
   </div>
 
   <script>
-    let mentions = [
-      { id: 1, source: "Twitter / X", text: "TrendApp user interface is extremely clean and fast!", sentiment: "positive", time: "2 mins ago" },
-      { id: 2, source: "Reddit r/webdev", text: "Comparing chart libraries for real-time analytics dashboards.", sentiment: "neutral", time: "5 mins ago" },
-      { id: 3, source: "News Feed", text: "Cloud infrastructure providers report minor API latency in East region.", sentiment: "negative", time: "12 mins ago" },
-      { id: 4, source: "Twitter / X", text: "Love the analytics stream filters and sentiment breakdown charts!", sentiment: "positive", time: "18 mins ago" }
-    ];
+    const welcomeScreen = document.getElementById('welcome-screen');
+    const dashboardScreen = document.getElementById('dashboard-screen');
+    const brandForm = document.getElementById('brand-form');
+    const brandNameInput = document.getElementById('brand-name-input');
+    const brandUrlInput = document.getElementById('brand-url-input');
+    const brandTitle = document.getElementById('brand-title');
+    const brandSubtitle = document.getElementById('brand-subtitle');
+    const changeBrandBtn = document.getElementById('change-brand-btn');
 
+    let currentBrand = "My Brand";
+
+    let mentions = [];
+
+    // Initialize Charts
     const lineCtx = document.getElementById('lineChart').getContext('2d');
     const lineChart = new Chart(lineCtx, {
       type: 'line',
@@ -245,6 +377,33 @@
         }]
       },
       options: { responsive: true }
+    });
+
+    // Handle Onboarding Form Submission
+    brandForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      currentBrand = brandNameInput.value.trim() || 'My Brand';
+      const brandUrl = brandUrlInput.value.trim() || 'website.com';
+
+      brandTitle.innerText = `📈 ${currentBrand} Analytics`;
+      brandSubtitle.innerText = `Tracking social mentions for ${brandUrl}`;
+
+      // Populate brand-specific initial sample data
+      mentions = [
+        { id: 1, source: "Twitter / X", text: `The customer support for ${currentBrand} responded in under 5 minutes!`, sentiment: "positive", time: "2 mins ago" },
+        { id: 2, source: "Reddit r/reviews", text: `Has anyone tested the latest features released on ${brandUrl}?`, sentiment: "neutral", time: "8 mins ago" },
+        { id: 3, source: "News Feed", text: `Market analysts highlight steady growth for ${currentBrand} this quarter.`, sentiment: "positive", time: "15 mins ago" },
+        { id: 4, source: "Twitter / X", text: `Experiencing minor loading delays on ${brandUrl} homepage today.`, sentiment: "negative", time: "22 mins ago" }
+      ];
+
+      welcomeScreen.style.display = 'none';
+      dashboardScreen.style.display = 'block';
+      renderMentions();
+    });
+
+    changeBrandBtn.addEventListener('click', () => {
+      dashboardScreen.style.display = 'none';
+      welcomeScreen.style.display = 'flex';
     });
 
     function renderMentions() {
@@ -276,9 +435,9 @@
 
     document.getElementById('sim-mention-btn').addEventListener('click', () => {
       const sampleTexts = [
-        { text: "Great performance on the new real-time analytics engine!", sentiment: "positive" },
-        { text: "System maintenance window scheduled for tonight.", sentiment: "neutral" },
-        { text: "Slight surge in error rates detected on third-party webhook.", sentiment: "negative" }
+        { text: `Great performance updates from ${currentBrand}!`, sentiment: "positive" },
+        { text: `Scheduled maintenance announcement posted on ${currentBrand} blog.`, sentiment: "neutral" },
+        { text: `Experiencing temporary API timeout when connecting to ${currentBrand}.`, sentiment: "negative" }
       ];
       const selected = sampleTexts[Math.floor(Math.random() * sampleTexts.length)];
       
@@ -297,8 +456,6 @@
 
     document.getElementById('search-input').addEventListener('input', renderMentions);
     document.getElementById('filter-sentiment').addEventListener('change', renderMentions);
-
-    renderMentions();
   </script>
 </body>
 </html>
